@@ -1,18 +1,19 @@
 import numpy as np
-
+from tkinter import filedialog
+import os
 
 alpha='abcdefghijklmnopqrstuvwxyz'
 
 letter_to_num={alpha[v]:v for v in range(len(alpha))}
 num_to_letter={v:alpha[v] for v in range(len(alpha))}
 
-
+path=os.path.dirname(os.path.realpath(__file__))
 
 def cesar_cipher(file , key):
     f= open(file,'r')
-    ind=file.rfind("\\")
-    folder_path= file[:ind+1]
-    out = open(folder_path+"cesar_out.txt",'w')
+    # ind=file.rfind("\\")
+    # folder_path= file[:ind+1]
+    out = open(os.path.join(path,"cesar_cipher.txt"),'w')
     lines= f.read()
     lines=lines.lower().splitlines()
     for line in lines:
@@ -31,9 +32,9 @@ def cesar_cipher(file , key):
 def vigenere_cipher(file,key,mode=True):
     key=key.lower()
     f= open(file,'r')
-    ind=file.rfind("\\")
-    folder_path= file[:ind+1]
-    out = open(folder_path+"vigenere_out.txt",'w')
+    # ind=file.rfind("\\")
+    # folder_path= file[:ind+1]
+    out = open(os.path.join(path,"vigenere_cipher.txt"),'w')
     lines= f.read()
     lines=lines.lower().splitlines()
     for line in lines:
@@ -70,9 +71,9 @@ def vigenere_cipher(file,key,mode=True):
 def vernam_cipher(file,key):
     key=key.lower()
     f= open(file,'r')
-    ind=file.rfind("\\")
-    folder_path= file[:ind+1]
-    out = open(folder_path+"vernam_out.txt",'w')
+    # ind=file.rfind("\\")
+    # folder_path= file[:ind+1]
+    out = open(os.path.join(path,"vernam_cipher.txt"),'w')
     lines= f.read()
     lines=lines.lower().splitlines()
     for line in lines:
@@ -95,9 +96,9 @@ def hill_cipher(file,key):
     key=np.array(key)
     num_letters=key.shape[0]
     f= open(file,'r')
-    ind=file.rfind("\\")
-    folder_path= file[:ind+1]
-    out = open(folder_path+"hill_out.txt",'w')
+    # ind=file.rfind("\\")
+    # folder_path= file[:ind+1]
+    out = open(os.path.join(path,"hill_cipher.txt"),'w')
     lines= f.read()
     lines=lines.lower().splitlines()
     for line in lines:
@@ -192,9 +193,9 @@ def find_group_indices(matrix,group):
 def playfair_cipher(file,key):
     key=key.lower().replace("j","i")
     f= open(file,'r')
-    ind=file.rfind("\\")
-    folder_path= file[:ind+1]
-    out = open(folder_path+"playfair_out.txt",'w')
+    # ind=file.rfind("\\")
+    # folder_path= file[:ind+1]
+    out = open(os.path.join(path,"playfair_cipher.txt"),'w')
     lines= f.read()
     lines=lines.lower().splitlines()
     matrix= create_matrix(key)
@@ -280,5 +281,44 @@ def playfair_cipher(file,key):
 
 
 if __name__ == "__main__":
-    playfair_cipher('E:\Security Projects\P1\message.txt',"rats")
-    # print(len(np.unique(create_matrix("rats"))) ==25)
+    cesar_key=None
+    vigenere_key=None
+    mode=None
+    vernam_key=None
+    hill_key=None
+    playfair_key=None
+
+    print("Choose Plaintext File")
+    file_path = filedialog.askopenfile().buffer.name
+    print("Now Enter the key for each cipher:")
+    cesar_key=int(input("Cesar Key: "))
+    vigenere_key = input("Vigenere Key: ")
+    mode=int(input("Vigenere Mode (0 or 1): "))
+    vernam_key= input("Vernam Key: ")
+    playfair_key = input("Playfair Key: ")
+    dim = int(input("Enter Hill Cipher Key first dimension: "))
+    hill_key = np.zeros((dim,dim), dtype="int")
+    h_k=[]
+    while(len(h_k)!= dim*dim):
+        h_k = input("Hill Key (fill rows first then columns in one line with spaces) : ").split()
+        if len(h_k)!= dim*dim:
+            print("Error , Please enter the key again!")
+    i=0
+    for r in range(dim):
+        for c in range(dim):
+            hill_key[r][c]= int(h_k[i])
+            i+=1
+    
+
+    cesar_cipher(file_path,cesar_key)
+    vigenere_cipher(file_path,vigenere_key,mode)
+    vernam_cipher(file_path,vernam_key)
+    playfair_cipher(file_path,playfair_key)
+    hill_cipher(file_path,hill_key)
+
+
+
+
+
+
+
